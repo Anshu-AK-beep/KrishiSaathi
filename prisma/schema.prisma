@@ -20,10 +20,14 @@ datasource db {
 
 model User {
   id            String   @id @default(uuid()) @db.Uuid
+  clerkUserId   String   @unique @map("clerk_user_id")
   email         String   @unique
   phoneNumber   String?  @map("phone_number")
   countryCode   String?  @default("+91") @map("country_code")
   fullName      String?  @map("full_name")
+  firstName     String?  @map("first_name")
+  lastName      String?  @map("last_name")
+  profileImage  String?  @map("profile_image")
   isVerified    Boolean  @default(false) @map("is_verified")
   isActive      Boolean  @default(true) @map("is_active")
   role          UserRole @default(FARMER)
@@ -42,6 +46,7 @@ model User {
   notifications Notification[]
   
   @@index([email])
+  @@index([clerkUserId])
   @@index([phoneNumber])
   @@index([role])
   @@index([isActive])
@@ -138,6 +143,13 @@ model CropPrediction {
   fieldArea               Decimal           @map("field_area") @db.Decimal(10, 2) // in acres
   soilType                String?           @map("soil_type")
   soilPh                  Decimal?          @map("soil_ph") @db.Decimal(3, 1)
+
+  // ✅ ADD THESE - Soil Nutrient Content
+  nitrogenContent         Decimal?          @map("nitrogen_content") @db.Decimal(8, 2)
+  phosphorusContent       Decimal?          @map("phosphorus_content") @db.Decimal(8, 2)
+  potassiumContent        Decimal?          @map("potassium_content") @db.Decimal(8, 2)
+  organicMatter           Decimal?          @map("organic_matter") @db.Decimal(5, 2)
+  moistureLevel           Decimal?          @map("moisture_level") @db.Decimal(5, 2)
   
   // Irrigation
   irrigationType          String?           @map("irrigation_type")
@@ -145,6 +157,7 @@ model CropPrediction {
   
   // Farming Practices
   fertilizerType          FertilizerType    @map("fertilizer_type")
+  fertilizerAmount        Decimal?          @map("fertilizer_amount") @db.Decimal(8, 2)
   fertilizerQuantity      Decimal?          @map("fertilizer_quantity") @db.Decimal(8, 2) // kg/acre
   pesticideUsed           Boolean           @default(false) @map("pesticide_used")
   pestControlMethod       String?           @map("pest_control_method")
@@ -161,6 +174,9 @@ model CropPrediction {
   totalRainfall           Decimal?          @map("total_rainfall") @db.Decimal(8, 2) // mm
   humidityLevel           Decimal?          @map("humidity_level") @db.Decimal(5, 2) // percentage 0-100
   weatherData             Json?             @map("weather_data")
+  avgRainfall             Decimal?          @map("avg_rainfall") @db.Decimal(8, 2)
+  avgHumidity             Decimal?          @map("avg_humidity") @db.Decimal(5, 2)
+  sunlightHours           Decimal?          @map("sunlight_hours") @db.Decimal(4, 1)
   
   // Predictions
   predictedYield          Decimal           @map("predicted_yield") @db.Decimal(10, 2) // quintals
@@ -176,6 +192,7 @@ model CropPrediction {
   recommendations         Json?             // AI recommendations
   riskFactors            Json?             @map("risk_factors")
   keyFactors             Json?             @map("key_factors")
+  pestDiseaseRisk         Json?             @map("pest_disease_risk")
   
   // Input Method and Status
   inputMethod            InputMethod       @default(MANUAL) @map("input_method")
