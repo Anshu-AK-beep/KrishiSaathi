@@ -1,0 +1,13 @@
+# ML models (global)
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.onnx
+
+# Python
+__pycache__/
+*.pyc
+
+# Env files
+.env
