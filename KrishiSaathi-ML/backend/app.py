@@ -4,6 +4,21 @@ import pickle
 import numpy as np
 from api_helpers import get_weather_data, get_district_coordinates, get_soil_data
 
+import os
+import joblib
+import requests
+
+MODEL_PATH = "enhanced_model.pkl"
+MODEL_URL = os.getenv("MODEL_URL")
+
+if not os.path.exists(MODEL_PATH):
+    r = requests.get(MODEL_URL)
+    with open(MODEL_PATH, "wb") as f:
+        f.write(r.content)
+
+model = joblib.load(MODEL_PATH)
+
+
 def safe_transform(encoder, val, label_type):
     classes = encoder.classes_
     if val in classes:
